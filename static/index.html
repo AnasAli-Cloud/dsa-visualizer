@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Data Structures Visualizer (Python Engine)</title>
+  <link rel="stylesheet" href="style.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body class="theme-dark">
+  <header class="app-header">
+    <div class="logo-group">
+      <div class="logo-icon">⚡</div>
+      <div class="logo-text">
+        <h1>DSA Visualizer</h1>
+        <span class="sub-badge">Python Record & Replay Engine</span>
+      </div>
+    </div>
+
+    <!-- Navigation Tabs -->
+    <nav class="nav-tabs" role="tablist">
+      <button class="nav-tab active" data-module="heap">
+        <span class="icon">⛰️</span> Binary Heap
+      </button>
+      <button class="nav-tab" data-module="avl">
+        <span class="icon">🌲</span> AVL Tree
+      </button>
+      <button class="nav-tab" data-module="graph">
+        <span class="icon">🕸️</span> Graph Navigator
+      </button>
+      <button class="nav-tab" data-module="hash">
+        <span class="icon">📦</span> Hash Mapper
+      </button>
+    </nav>
+
+    <!-- Global Controls -->
+    <div class="global-actions">
+      <button id="themeToggleBtn" class="btn icon-btn" title="Toggle Light/Dark Theme">🌓</button>
+    </div>
+  </header>
+
+  <main class="main-workspace">
+    <!-- Left Sidebar: Controls & Operations -->
+    <aside class="control-sidebar">
+      <!-- HEAP CONTROLS -->
+      <div class="module-controls" id="heapControls">
+        <div class="control-section">
+          <h3>Binary Heap Controls</h3>
+          <div class="toggle-group">
+            <label class="toggle-label">Mode:</label>
+            <div class="radio-pill-group">
+              <input type="radio" id="heapMin" name="heapMode" value="min" checked>
+              <label for="heapMin">Min-Heap</label>
+              <input type="radio" id="heapMax" name="heapMode" value="max">
+              <label for="heapMax">Max-Heap</label>
+            </div>
+          </div>
+
+          <div class="form-group inline-form">
+            <input type="number" id="heapInput" placeholder="Value (e.g. 42)" />
+            <button id="heapInsertBtn" class="btn btn-primary">Insert</button>
+          </div>
+
+          <div class="btn-grid">
+            <button id="heapExtractBtn" class="btn btn-secondary">Extract Root</button>
+            <button id="heapRandomBtn" class="btn btn-outline">Insert Random</button>
+            <button id="heapClearBtn" class="btn btn-danger">Clear Heap</button>
+          </div>
+        </div>
+
+        <div class="legend-card">
+          <h4>Legend</h4>
+          <div class="legend-item"><span class="legend-dot color-compare"></span> Comparison (Yellow)</div>
+          <div class="legend-item"><span class="legend-dot color-swap"></span> Sift Swap (Red)</div>
+          <div class="legend-item"><span class="legend-dot color-normal"></span> Normal Node (Teal)</div>
+        </div>
+      </div>
+
+      <!-- AVL CONTROLS -->
+      <div class="module-controls hidden" id="avlControls">
+        <div class="control-section">
+          <h3>AVL Tree Controls</h3>
+          <p class="section-desc">Self-balancing BST with automatic LL, RR, LR, RL rotation visualization.</p>
+          <div class="form-group inline-form">
+            <input type="number" id="avlInput" placeholder="Key (e.g. 50)" />
+            <button id="avlInsertBtn" class="btn btn-primary">Insert Key</button>
+          </div>
+
+          <div class="form-group inline-form">
+            <input type="number" id="avlDeleteInput" placeholder="Key to delete" />
+            <button id="avlDeleteBtn" class="btn btn-warning">Delete Key</button>
+          </div>
+
+          <div class="btn-grid">
+            <button id="avlRandomBtn" class="btn btn-outline">+ Add Random</button>
+            <button id="avlPresetLLBtn" class="btn btn-outline" title="Trigger LL Rotation">Preset LL</button>
+            <button id="avlPresetLRBtn" class="btn btn-outline" title="Trigger LR Rotation">Preset LR</button>
+            <button id="avlClearBtn" class="btn btn-danger">Clear Tree</button>
+          </div>
+        </div>
+
+        <div class="legend-card">
+          <h4>Balance Factor (BF)</h4>
+          <div class="legend-item"><span class="badge bf-balanced">BF: -1, 0, 1</span> Balanced</div>
+          <div class="legend-item"><span class="badge bf-imbalanced">BF: ≥2 or ≤-2</span> Imbalanced (Trigger Rotation)</div>
+        </div>
+      </div>
+
+      <!-- GRAPH CONTROLS -->
+      <div class="module-controls hidden" id="graphControls">
+        <div class="control-section">
+          <h3>Graph Navigator Controls</h3>
+          <div class="form-group">
+            <label>Start Node:</label>
+            <select id="graphStartSelect" class="form-select"></select>
+          </div>
+
+          <div class="btn-grid">
+            <button id="graphBfsBtn" class="btn btn-primary">Run BFS (FIFO)</button>
+            <button id="graphDfsBtn" class="btn btn-secondary">Run DFS (LIFO)</button>
+            <button id="graphDijkstraBtn" class="btn btn-accent">Run Dijkstra</button>
+            <button id="graphPrimBtn" class="btn btn-success">Run Prim's MST</button>
+          </div>
+
+          <div class="sub-section">
+            <h4>Add Node / Edge</h4>
+            <div class="inline-form">
+              <input type="text" id="newNodeName" placeholder="Node (e.g. G)" maxlength="3" style="width: 70px;" />
+              <button id="addNodeBtn" class="btn btn-outline">Add Node</button>
+            </div>
+            <div class="inline-form mt-2">
+              <input type="text" id="edgeU" placeholder="From" maxlength="3" style="width: 50px;" />
+              <input type="text" id="edgeV" placeholder="To" maxlength="3" style="width: 50px;" />
+              <input type="number" id="edgeWeight" placeholder="Wt" style="width: 55px;" value="3" />
+              <button id="addEdgeBtn" class="btn btn-outline">Add Edge</button>
+            </div>
+          </div>
+
+          <button id="graphResetBtn" class="btn btn-danger mt-3">Reset Graph</button>
+        </div>
+
+        <div class="legend-card">
+          <h4>Graph Indicators</h4>
+          <div class="legend-item"><span class="legend-dot color-mst"></span> MST Optimal Edge (Green)</div>
+          <div class="legend-item"><span class="legend-dot color-active"></span> Frontier / Visiting (Cyan/Yellow)</div>
+          <div class="legend-item"><span class="legend-dot color-visited"></span> Visited (Purple)</div>
+        </div>
+      </div>
+
+      <!-- HASH TABLE CONTROLS -->
+      <div class="module-controls hidden" id="hashControls">
+        <div class="control-section">
+          <h3>Separate Chaining Hash Table</h3>
+          <p class="section-desc">Hash Function: <code>hash(key) = key % 7</code>. Visual collision stacking.</p>
+
+          <div class="form-group inline-form">
+            <input type="number" id="hashKeyInput" placeholder="Key (e.g. 15)" />
+            <input type="text" id="hashValInput" placeholder="Val (optional)" style="width: 90px;" />
+            <button id="hashInsertBtn" class="btn btn-primary">Insert</button>
+          </div>
+
+          <div class="form-group inline-form">
+            <input type="number" id="hashSearchInput" placeholder="Search Key" />
+            <button id="hashSearchBtn" class="btn btn-secondary">Search</button>
+          </div>
+
+          <div class="form-group inline-form">
+            <input type="number" id="hashDeleteInput" placeholder="Delete Key" />
+            <button id="hashDeleteBtn" class="btn btn-warning">Delete</button>
+          </div>
+
+          <div class="btn-grid">
+            <button id="hashCollisionPreset" class="btn btn-outline" title="Inserts keys with same modulo">Demo Collisions</button>
+            <button id="hashResetBtn" class="btn btn-danger">Reset Table</button>
+          </div>
+        </div>
+      </div>
+    </aside>
+
+    <!-- Center Canvas Stage & Visualization -->
+    <section class="stage-section">
+      <!-- Player Control Bar (Step, Play, Speed, Scrub) -->
+      <div class="playback-bar">
+        <div class="player-controls">
+          <button id="playBtn" class="btn btn-icon" title="Play / Resume">▶️</button>
+          <button id="pauseBtn" class="btn btn-icon" title="Pause">⏸️</button>
+          <button id="stepBackBtn" class="btn btn-icon" title="Step Back">⏮️</button>
+          <button id="stepForwardBtn" class="btn btn-icon" title="Step Forward">⏭️</button>
+          <button id="resetAnimBtn" class="btn btn-icon" title="Reset Trace">🔄</button>
+        </div>
+
+        <div class="player-progress">
+          <span id="stepCounter" class="step-badge">Step 0 / 0</span>
+          <input type="range" id="traceScrubber" min="0" max="0" value="0" class="scrubber" />
+        </div>
+
+        <div class="player-speed">
+          <label for="speedSlider">Speed:</label>
+          <input type="range" id="speedSlider" min="100" max="1800" step="50" value="700" />
+          <span id="speedDisplay">700ms</span>
+        </div>
+      </div>
+
+      <!-- Live Step Explainer Banner -->
+      <div class="step-explainer" id="stepExplainer">
+        <span class="badge badge-info" id="stepTypeBadge">READY</span>
+        <span class="step-text" id="stepDescription">Select an operation to start recording and replaying algorithm animations.</span>
+      </div>
+
+      <!-- Main Canvas Viewport -->
+      <div class="canvas-wrapper" id="canvasWrapper">
+        <canvas id="mainCanvas"></canvas>
+      </div>
+
+      <!-- Bottom Linear Array / Auxiliary Display (Especially for Heap & Hash Table) -->
+      <div class="auxiliary-dock" id="auxiliaryDock">
+        <div class="dock-header">
+          <span class="dock-title" id="dockTitle">Linear Array Representation (Memory Buffer)</span>
+          <span class="dock-info" id="dockInfo">Synchronized with logical tree</span>
+        </div>
+        <div class="dock-content" id="dockContent">
+          <!-- Dynamic Array Blocks / Stack / Queue slots rendered here -->
+        </div>
+      </div>
+    </section>
+
+    <!-- Right Live Inspector & Data Inspector -->
+    <aside class="inspector-sidebar">
+      <div class="inspector-card">
+        <h3>Live Data Structure State</h3>
+        <div class="state-metrics" id="stateMetrics">
+          <div class="metric-row">
+            <span class="metric-name">Active Module:</span>
+            <span class="metric-val" id="metricModule">Binary Heap</span>
+          </div>
+          <div class="metric-row">
+            <span class="metric-name">Element Count:</span>
+            <span class="metric-val" id="metricSize">0</span>
+          </div>
+          <div class="metric-row">
+            <span class="metric-name">Auxiliary State:</span>
+            <span class="metric-val" id="metricAux">None</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="inspector-card aux-structures-card">
+        <h3 id="auxCardTitle">Custom DS Inspector</h3>
+        <div class="aux-visualizer" id="auxVisualizer">
+          <div class="empty-state">No active queue or stack during idle state.</div>
+        </div>
+      </div>
+
+      <div class="inspector-card log-card">
+        <h3>Execution Trace History</h3>
+        <div class="trace-log-list" id="traceLogList">
+          <div class="log-entry system-entry">System ready. Python backend connected.</div>
+        </div>
+      </div>
+    </aside>
+  </main>
+
+  <script src="visualizer.js"></script>
+</body>
+</html>
